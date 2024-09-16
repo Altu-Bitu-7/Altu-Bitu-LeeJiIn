@@ -1,27 +1,36 @@
 #include <iostream>
-#include <string>
+
 using namespace std;
-int Findseries(int N)
-{
-    int i = 666;
-    int series = 0;
-    string target;
-    while(1)
-    {
-        target = to_string(i);
-        for(int j = 0; j < target.length()-2; j++)
-            if(target[j] == '6' && target[j+1] == '6' && target[j+2] == '6')
-            {
-                series++;
-                if(series == N)
-                    return i;
-                break;
-            }
-        i++;
-    }
+
+bool isValid (int cur) {
+	while (cur >= 666) {
+		if (cur % 1000 == 666) {
+			return true;
+		}
+		cur /= 10;
+	}
+	return false;
 }
+
+int solution (int &n) {
+	int cur = 666;
+	int cnt = 0;
+
+	while (true) {
+		if (isValid(cur)) {
+			cnt++;
+		}
+		if (cnt == n) {
+			return cur;
+		}
+		cur++;
+	}
+}
+
 int main() {
-    int N;
-    cin >> N;
-    cout << Findseries(N);
+	int n;
+	cin >> n;
+	cout << solution(n);
+
+	return 0;
 }

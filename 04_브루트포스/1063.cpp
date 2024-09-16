@@ -1,66 +1,77 @@
-#include<iostream>
-#include<string>
+#include <iostream>
+
 using namespace std;
-#define SIZE 8
- 
-string king, stone;
-int N;
-// R, L, B, T, RT, LT, RB, LB
-int dx[SIZE] = { 0, 0, 1, -1, -1, -1, 1, 1 };
-int dy[SIZE] = { 1, -1, 0, 0, 1, -1, 1, -1 };
- 
-int main(void)
-{
-    int kx, ky, sx, sy;
-    string direction;
-    cin >> king >> stone;
- 
-    for (int i = 0; i < 2; i++)
-    {
-        if (i == 0)
-        {
-            ky = king[i] - 'A';
-            sy = stone[i] - 'A';
-        }
-        else
-        {
-            kx = '8' - king[i];
-            sx = '8' - stone[i];
-        }
-    }
- 
-    cin >> N;
-    int dir = 0;
- 
-    for (int i = 0; i < N; i++)
-    {
-        cin >> direction;
- 
-        if (!direction.compare("R")) dir = 0;
-        else if (!direction.compare("L")) dir = 1;
-        else if (!direction.compare("B")) dir = 2;
-        else if (!direction.compare("T")) dir = 3;
-        else if (!direction.compare("RT")) dir = 4;
-        else if (!direction.compare("LT")) dir = 5;
-        else if (!direction.compare("RB")) dir = 6;
-        else if (!direction.compare("LB")) dir = 7;
- 
-        int kmx = kx + dx[dir];
-        int kmy = ky + dy[dir];
- 
-        if (kmx < 0 || kmx >= SIZE || kmy < 0 || kmy >= SIZE) continue;
-        if (kmx == sx && kmy == sy)
-        {
-            int smx = sx + dx[dir];
-            int smy = sy + dy[dir];
-            if (smx < 0 || smx >= SIZE || smy < 0 || smy >= SIZE) continue;
-            sx = smx; sy = smy;
-        }
-        kx = kmx; ky = kmy;
-    }
- 
-    cout << (char)(ky + 'A') << SIZE - kx << '\n';
-    cout << (char)(sy + 'A') << SIZE - sx << '\n';
- 
-    return 0;
+typedef pair<char, char> cc;
+
+// input에 따라 이동
+cc move (string input, char x, char y) {
+	for (char how : input) {
+		if (how == 'R') {
+			x++;
+		}
+		else if (how == 'L') {
+			x--;
+		}
+		else if (how == 'B') {
+			y--;
+		}
+		else { // (how == 'T')
+			y++;
+		}
+	}
+
+	return {x, y};
+}
+
+// 두 좌표의 위치가 일치하는지 확인
+bool isSame (cc k, cc s) {
+	return (k.first == s.first && k.second == s.second);
+}
+
+// 체스판 범위를 넘어서는지 확인
+bool checkRange (cc pos) {
+	if (pos.first < 'A' || pos.first > 'H' || pos.second < '1' || pos.second > '8') {
+		return false;
+	}
+	
+	return true;
+}
+
+int main() {
+	cc k, s; // king, stone 위치
+	int n;
+	string input;
+
+	// 입력
+	cin >> k.first >> k.second >> s.first >> s.second >> n;
+
+	// 연산
+	while (n--) {
+		cin >> input;
+		
+		cc next_k, next_s;
+
+		// king 이동
+		next_k = move(input, k.first, k.second);
+
+		// stone 이동
+		if (isSame(next_k, s)) { // 이동한 king과 stone 위치가 일치하면
+			// king이 움직인 방향과 같은 방향으로 이동
+			next_s = move(input, s.first, s.second);
+		}
+		else {
+			next_s = s;
+		}
+
+		// 체스판 밖으로 나가지 않을 경우만 이동
+		if (checkRange(next_k) && checkRange(next_s)) {
+			k = next_k;
+			s = next_s;
+		}
+	}
+
+	// 출력
+	cout << k.first << k.second << "\n" << s.first << s.second;
+
+	return 0;
 }

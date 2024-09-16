@@ -1,59 +1,72 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-int main()
-{
+void all (int &s) {
+	s = (1 << 21) - 1;
+}
+
+void empty (int &s) {
+	s = 0;
+}
+
+void add (int &s, int n) {
+	s |= (1 << n);
+}
+
+void remove (int &s, int n) {
+	s &= ~(1 << n);
+}
+
+int check (int &s, int n) {
+	if (s & (1 << n)) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+void toggle (int &s, int n) {
+	s ^= (1 << n);
+}
+
+int main() {
 	ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+	cin.tie(NULL);
+	cout.tie(NULL);
 
-    int m;
-    cin >> m;
+	int m, x, s = 0;
+	string op;
+	cin >> m;
+	while (m--) {
+		cin >> op;
 
-    string order;
-    int val, BIT = 0; // BIT를 반드시 0으로 초기화 해준다.
-    while (m--)
-    {
-        cin >> order;
-        if (order == "add")
-        {
-            cin >> val;
-            // or 연산자를 통해 val번째 자리수를 1로 채운다.
-            BIT |= (1 << val);
-        }
-        else if (order == "remove")
-        {
-            cin >> val;
-            // ex) 1000 & ~(1000) = 0000
-            BIT &= ~(1 << val);
-        }
-        else if (order == "check")
-        {
-            cin >> val;
-            if (BIT & (1 << val))
-                cout << 1 << '\n';
-            else
-                cout << 0 << '\n';
-        }
-        else if (order == "toggle")
-        {
-            cin >> val;
-            // BIT의 val번째 자리가 1이라면 1^1=0이 되어 1->0이 되고
-            // val번째 자리가 0이라면 0^1=1 이 되어 0 -> 1이 된다.
-            BIT ^= (1 << val);
-        }
-        else if (order == "all")
-        {
-            // ex) 10000 - 1 = 1111
-            BIT = (1 << 21) - 1;
-        }
-        else if (order == "empty")
-        {
-            BIT = 0;
-        }
-    }
+		// x 피연산자가 입력되지 않는 연산자
+		if (op == "all") {
+			all(s);
+		}
+		else if (op == "empty") {
+			empty(s);
+		}
 
-    return 0;
+		// x 피연산자가 입력되는 연산자
+		else {
+			cin >> x;
+			if (op == "add") {
+				add(s, x);
+			}
+			else if (op == "remove") {
+				remove(s, x);
+			}
+			else if (op == "check") {
+				cout << check(s, x) << "\n";
+			}
+			else if (op == "toggle") {
+				toggle(s, x);
+            }
+		}
+	}	
+	
+	return 0;
 }
